@@ -1,22 +1,29 @@
 #!/bin/sh
-VERID='nago.sh,v1.15 2010 Yargo Bonetti'
+VERID='nago.sh // 2010,2016-12-17 Yargo Bonetti // github.com/hb9kns/nago'
 
 # external programs
+## text pager
 pager=${PAGER:-more}
 pager=more
+## html browser
 browser=${BROWSER:-lynx -force_html}
+## telnet client
 telnet=${TELNET:-telnet}
+## image handler
 #imgviewer=display
-imgviewer=echo
+imgviewer=echo # dumb handler: only print image name
+## netcat/socat fetcher -- this *must* work, or nago is dead!
 #mync () { ${NETCAT:-/sys/pkg/sbin/nc} "$@" ; }
 mync () { socat -t9 tcp4:$1:$2 - ; }
 #mync () { read gf ; snarf "gopher://$1:$2/$gf" '-'; }
-STDHOME=sdf.lonestar.org/
 
-# just in case somebody changes the standard...
 gopherport=70
-
+## default home (-h option)
+STDHOME=sdf.lonestar.org/
+## or use environment value, if defined
 gopherhome=${GOPHER_HOME:-$STDHOME}
+
+# **modify further down only if you understand the code!**
 
 # temporary files
 tmpbase=${TEMP:-/tmp}
@@ -60,9 +67,9 @@ if ! echo test > $stack ; then
 fi
 
 if [ "$1" = "-h" ] ; then
-# remove / and all after
+# remove / and everything after
  s_ser=${gopherhome%%/*}
-# remove first / and all before, and prepend / again
+# remove first / and everything before, and prepend / again
  s_dir=/${gopherhome#*/}
  s_por=$gopherport
 else
