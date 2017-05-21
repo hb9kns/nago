@@ -13,8 +13,8 @@ telnet=${TELNET:-telnet}
 #imgviewer=display
 imgviewer=echo # dumb handler: only print image name
 ## netcat/socat fetcher -- this *must* work, or nago is dead!
-#mync () { ${NETCAT:-/sys/pkg/sbin/nc} "$@" ; }
-mync () { socat -t9 tcp4:$1:$2 - ; }
+mync () { ${NETCAT:-/usr/pkg/bin/netcat} "$@" ; }
+#mync () { socat -t9 tcp4:$1:$2 - ; }
 #mync () { read gf ; snarf "gopher://$1:$2/$gf" '-'; }
 
 gopherport=70
