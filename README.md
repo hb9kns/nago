@@ -11,15 +11,24 @@ work. If it fails somewhere, please report server and selector!
 
 run `nago.sh` without arguments to get a short help:
 
-	usage: nago.sh [-h|<server>] [<directory> <port>]
-	where <server> is a server in gopherspace, <directory> a subdir on it,
-	 and <port> the port to connect to (default 70)
-	 e.g: nago.sh sdf.lonestar.org /users/yargo
-	-h uses environment variable GOPHER_HOME as starting point
-	  (currently ),
-	  or if that is empty, sdf.lonestar.org/
-	  (only default port 70 is supported, and must be a directory)
-	Note: will not work for retrieving a file directly! (undefined behaviour)
+    usage: nago [-l <logfile>] [-f <file>|-h|<server>] [<directory> <port>]
+    where <server> is a server in gopherspace, <directory> a subdir on it,
+     and <port> the port to connect to (default 70)
+     e.g: /home/yargo/bin/nago sdf.lonestar.org /users/yargo
+    -l <logfile> uses <logfile> for saving/displaying addresses (bookmarks)
+      (default .gopherlog, can be defined by GOPHER_LOG)
+    -f <file> interprets <file> as gophermap for starting point
+    -h uses environment variable GOPHER_HOME as starting point
+      (currently sdf.org/users/yargo),
+      or if that is empty, sdf.lonestar.org/
+      (only default port 70 is supported, and must be a directory)
+     Note: will not work for retrieving a file directly! (undefined behaviour)
+    (nago.sh // 2010,2017-10-11 Yargo Bonetti // github.com/hb9kns/nago)
+
+To read a local gophermap file, specify it after the `-f` option.
+
+`-l` allows to specify a logfile (usable as bookmarks file). If not
+specified, `$HOME/.gopherlog` or the value of `GOPHER_LOG` will be used.
 
 If you want to set the '-h' starting point, you should set `GOPHER_HOME` to
 a value like `gopher.floodgap.com/world` -- please note this "home" does not
@@ -35,7 +44,10 @@ script will offer the following command possibilities:
 - enter line number: select the corresponding document (either for
   display and download in case of file, or further selection in case
   of directory); 0 or b (for back) return to the previous directory
+- prepend a line number with `s` : show gopher URL for that line
+- prepend a line number with `a` : add that line to the gopherlog
 - open other selector (server, port, directory)
+- open gopherlog
 - exit script
 
 Entering an empty command is the same as entering 0 or b, i.e back;
@@ -54,6 +66,6 @@ In the netcat version, the environment variable NETCAT will be used if set.
 
 ---
 
-_(2010,2017-July, Y.Bonetti)_
+_(2010,2017-October, Y.Bonetti)_
 
 [Gopher]: https://en.wikipedia.org/wiki/Gopher_(protocol) "Gopher protocol"

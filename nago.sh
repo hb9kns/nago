@@ -1,5 +1,5 @@
 #!/bin/sh
-VERID='nago.sh // 2010,2016-12-17 Yargo Bonetti // github.com/hb9kns/nago'
+VERID='nago.sh // 2010,2017-10-11 Yargo Bonetti // github.com/hb9kns/nago'
 
 # external programs
 ## text pager
@@ -12,16 +12,28 @@ telnet=${TELNET:-telnet}
 ## image handler
 #imgviewer=display
 imgviewer=echo # dumb handler: only print image name
-## netcat/socat fetcher -- this *must* work, or nago is dead!
-mync () { ${NETCAT:-/usr/pkg/bin/netcat} "$@" ; }
-#mync () { socat -t9 tcp4:$1:$2 - ; }
-#mync () { read gf ; snarf "gopher://$1:$2/$gf" '-'; }
+
+# netcat/socat/snarf fetcher -- this *must* work, or nago is dead!
+mync () {
+# if port<1 (i.e, local file) or missing, then 'cat `cat`'
+ if test ${2:-0} -lt 1
+ then cat `cat`
+ else
+# uncomment one one of the following and comment the others,
+# depending on what's available on your system
+## ${NETCAT:-/usr/pkg/bin/netcat} "$@"
+## read gf ; snarf "gopher://$1:$2/$gf" '-'
+  socat -t9 tcp4:$1:$2 -
+ fi
+}
 
 gopherport=70
 ## default home (-h option)
 STDHOME=sdf.lonestar.org/
 ## or use environment value, if defined
 gopherhome=${GOPHER_HOME:-$STDHOME}
+## default logfile (-l option)
+gopherlog="${GOPHER_LOG:-$HOME/.gopherlog}"
 
 # **modify further down only if you understand the code!**
 
@@ -34,15 +46,18 @@ stack=$tmpbase/$tmpprefix.$$.stack
 
 if [ "$1" = "" ] ; then
  cat <<EOH
- usage: $0 [-h|<server>] [<directory> <port>]
+ usage: $0 [-l <logfile>] [-f <file>|-h|<server>] [<directory> <port>]
  where <server> is a server in gopherspace, <directory> a subdir on it,
   and <port> the port to connect to (default $gopherport)
   e.g: $0 sdf.lonestar.org /users/yargo
+ -l <logfile> uses <logfile> for saving/displaying addresses (bookmarks)
+   (default $gopherlog, can be defined by GOPHER_LOG)
+ -f <file> interprets <file> as gophermap for starting point
  -h uses environment variable GOPHER_HOME as starting point
    (currently $GOPHER_HOME),
    or if that is empty, $STDHOME
    (only default port $gopherport is supported, and must be a directory)
- Note: will not work for retrieving a file directly! (undefined behaviour)
+  Note: will not work for retrieving a file directly! (undefined behaviour)
  ($VERID)
 EOH
 exit 1
@@ -66,19 +81,29 @@ if ! echo test > $stack ; then
  rmexit 9
 fi
 
-if [ "$1" = "-h" ] ; then
+# default selector type: directory
+s_typ=1
+
+case $1 in
+-h)
 # remove / and everything after
  s_ser=${gopherhome%%/*}
 # remove first / and everything before, and prepend / again
  s_dir=/${gopherhome#*/}
  s_por=$gopherport
-else
+ ;;
+-f)
+# use port=0 as flag for local file
+ s_por=0
+# and load file as directory
+ s_dir="$2"
+ ;;
+*)
  s_ser=$1
  s_dir=/$2
  s_por=${3:-$gopherport}
-fi
-# selector type: directory
-s_typ=1
+ ;;
+esac
 
 echo "starting at $s_ser:$s_por$s_dir"
 
@@ -112,10 +137,13 @@ getdir () {
 }
 
 # definitions for actions:
-ACT_back=0
-ACT_select=1
-ACT_quit=2
+ACT_quit=0
+ACT_back=1
+ACT_select=2
 ACT_other=3
+ACT_show=4
+ACT_add=5
+ACT_log=6
 
 # show directory (in $dirtmp), and return selection type, dir, server, port
 # and action in variables s_typ, s_dir, s_ser, s_por, s_act
@@ -130,7 +158,7 @@ selectdir () {
  while ! grep "^  $ln	" $dirtmp >/dev/null ; do
 # show directory
   $pager $ftmp
-  echo "enter line number (0 or b for back), (o)pen other, e(x)it, (q)uit!"
+  echo "   (s/a)N (show/addlog) selection, o.ther, l.og, x.it, q.uit"
   read inp
   case $inp in
 # set action flag
@@ -145,6 +173,9 @@ selectdir () {
       echo "directory? (may be empty)"
       read s_dir ;;
   b*) ln=0 ; act=$ACT_back ;;
+  s*) ln=${inp#?} ; act=$ACT_show ;;
+  a*) ln=${inp#?} ; act=$ACT_add ;;
+  l*) ln=0 ; act=$ACT_log ;;
   *) ln=${inp:-0}
      if [ $ln = 0 ] ; then act=$ACT_back
      else act=$ACT_select
@@ -154,6 +185,8 @@ selectdir () {
  s_act=$act
  case $s_act in
  $ACT_back|$ACT_other) s_typ=1 ;;
+ $ACT_add) grep "^  $ln	" $dirtmp | sed -e 's/[^	]*	//' >> "$gopherlog" ;;
+ $ACT_log) s_dir="$gopherlog" ; s_typ=1 ; s_por=0 ;;
  *) s_typ=`grep "^  $ln	" $dirtmp | cut -f 2 | sed -e 's/\(.\).*/\1/'`
     s_por=`grep "^  $ln	" $dirtmp | cut -f 5`
 # if not enough fields, it's a top level address (server only)
@@ -209,7 +242,7 @@ while [ $s_act != $ACT_quit ] ; do
    1) echo "changing to $s_dir" ;;
    8) echo "telnetting..."
       $telnet $s_ser $s_por
-      echo "** telnet finished, hit return to continue..."
+      echo "** telnet finished, hit return to resume..."
       read inp
       poplevel
       ;;
@@ -245,6 +278,10 @@ while [ $s_act != $ACT_quit ] ; do
       poplevel
    esac ;;
   $ACT_quit) echo "bye!" ;;
+  $ACT_show) echo "    gopher://$s_ser:$s_por/$s_typ$s_dir"
+    echo ' (ENTER to resume)' ; read inp ; poplevel ;;
+  $ACT_add) poplevel ; echo added: ; tail -n 1 "$gopherlog" ; sleep 1 ;;
+  $ACT_log) echo "switching to logfile $gopherlog" ; sleep 1 ;;
   *) echo "** unrecognized command, internal error! trying to go on..."
      poplevel ;;
   esac
