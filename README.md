@@ -18,6 +18,7 @@ run `nago.sh` without arguments to get a short help:
     -l <logfile> uses <logfile> for saving/displaying addresses (bookmarks)
       (default .gopherlog, can be defined by GOPHER_LOG)
     -f <file> interprets <file> as gophermap for starting point
+      (of logfile if empty)
     -h uses environment variable GOPHER_HOME as starting point
       (currently sdf.org/users/yargo),
       or if that is empty, sdf.lonestar.org/
@@ -25,10 +26,12 @@ run `nago.sh` without arguments to get a short help:
      Note: will not work for retrieving a file directly! (undefined behaviour)
     (nago.sh // 2010,2017-10-11 Yargo Bonetti // github.com/hb9kns/nago)
 
-To read a local gophermap file, specify it after the `-f` option.
+To read a local gophermap file, specify it after the `-f` option;
+`-f` alone will start with the logfile.
+You may use this in the sense of a bookmarks file.
 
-`-l` allows to specify a logfile (usable as bookmarks file). If not
-specified, `$HOME/.gopherlog` or the value of `GOPHER_LOG` will be used.
+`-l` allows to specify a logfile. If an empty name is given,
+`$HOME/.gopherlog` or the value of `GOPHER_LOG` will be used.
 
 If you want to set the '-h' starting point, you should set `GOPHER_HOME` to
 a value like `gopher.floodgap.com/world` -- please note this "home" does not
