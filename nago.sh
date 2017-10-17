@@ -109,7 +109,9 @@ do case $1 in
  shift ; shift
  ;;
 esac
-shift
+if test "$1" != ""
+then shift
+fi
 done
 
 echo "** starting at $s_ser:$s_por$s_dir"
