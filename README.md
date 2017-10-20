@@ -16,7 +16,7 @@ run `nago.sh` without arguments to get a short help:
      and <port> the port to connect to (default 70)
      e.g: /home/yargo/bin/nago sdf.lonestar.org /users/yargo
     -l <logfile> uses <logfile> for saving/displaying addresses (bookmarks)
-      (default .gopherlog, can be defined by GOPHER_LOG)
+      (default .gophermap, can be defined by GOPHER_MAP)
     -f <file> interprets <file> as gophermap for starting point
       (of logfile if empty)
     -h uses environment variable GOPHER_HOME as starting point
@@ -31,7 +31,7 @@ To read a local gophermap file, specify it after the `-f` option;
 You may use this in the sense of a bookmarks file.
 
 `-l` allows to specify a logfile. If an empty name is given,
-`$HOME/.gopherlog` or the value of `GOPHER_LOG` will be used.
+`$HOME/.gophermap` or the value of `GOPHER_MAP` will be used.
 
 If you want to set the '-h' starting point, you should set `GOPHER_HOME` to
 a value like `gopher.floodgap.com/world` -- please note this "home" does not
@@ -48,9 +48,9 @@ script will offer the following command possibilities:
   display and download in case of file, or further selection in case
   of directory); 0 or b (for back) return to the previous directory
 - prepend a line number with `s` : show gopher URL for that line
-- prepend a line number with `a` : add that line to the gopherlog
+- prepend a line number with `a` : add that line to the gophermap
 - open other selector (server, port, directory)
-- open gopherlog
+- open gophermap
 - exit script
 
 Entering an empty command is the same as entering 0 or b, i.e back;

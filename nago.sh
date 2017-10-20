@@ -33,7 +33,7 @@ STDHOME=sdf.lonestar.org/
 ## or use environment value, if defined
 gopherhome=${GOPHER_HOME:-$STDHOME}
 ## default logfile (-l option)
-gopherlog="${GOPHER_LOG:-$HOME/.gopherlog}"
+gophermap="${GOPHER_MAP:-$HOME/.gophermap}"
 
 # **modify further down only if you understand the code!**
 
@@ -51,7 +51,7 @@ if [ "$1" = "" ] ; then
   and <port> the port to connect to (default $gopherport)
   e.g: $0 sdf.lonestar.org /users/yargo
  -l <logfile> uses <logfile> for saving/displaying addresses (bookmarks)
-   (default $gopherlog, can be defined by GOPHER_LOG)
+   (default $gophermap, can be defined by GOPHER_MAP)
  -f <file> interprets <file> as gophermap for starting point
    (or logfile if empty)
  -h uses environment variable GOPHER_HOME as starting point
@@ -94,12 +94,12 @@ do case $1 in
  s_dir=/${gopherhome#*/}
  s_por=$gopherport
  ;;
--l) gopherlog="${2:-$gopherlog}" ; shift ;;
+-l) gophermap="${2:-$gophermap}" ; shift ;;
 -f)
 # use port=0 as flag for local file
  s_por=0
-# and load file as directory (gopherlog if empty)
- s_dir="${2:-$gopherlog}"
+# and load file as directory (gophermap if empty)
+ s_dir="${2:-$gophermap}"
  shift
  ;;
 *)
@@ -194,8 +194,8 @@ selectdir () {
  s_act=$act
  case $s_act in
  $ACT_back|$ACT_other) s_typ=1 ;;
- $ACT_add) grep "^  $ln	" $dirtmp | sed -e 's/[^	]*	//' >> "$gopherlog" ;;
- $ACT_log) s_dir="$gopherlog" ; s_typ=1 ; s_por=0 ;;
+ $ACT_add) grep "^  $ln	" $dirtmp | sed -e 's/[^	]*	//' >> "$gophermap" ;;
+ $ACT_log) s_dir="$gophermap" ; s_typ=1 ; s_por=0 ;;
  *) s_typ=`grep "^  $ln	" $dirtmp | cut -f 2 | sed -e 's/\(.\).*/\1/'`
     s_por=`grep "^  $ln	" $dirtmp | cut -f 5`
 # if not enough fields, it's a top level address (server only)
@@ -289,8 +289,8 @@ while [ $s_act != $ACT_quit ] ; do
   $ACT_quit) echo "** bye!" ;;
   $ACT_show) echo "**     gopher://$s_ser:$s_por/$s_typ$s_dir"
     echo '**  (ENTER to resume)' ; read inp ; poplevel ;;
-  $ACT_add) poplevel ; echo '** added:' ; tail -n 1 "$gopherlog" ; sleep 1 ;;
-  $ACT_log) echo "** switching to logfile $gopherlog" ; sleep 1 ;;
+  $ACT_add) poplevel ; echo '** added:' ; tail -n 1 "$gophermap" ; sleep 1 ;;
+  $ACT_log) echo "** switching to logfile $gophermap" ; sleep 1 ;;
   *) echo "** unrecognized command, internal error! trying to go on..."
      poplevel ;;
   esac
