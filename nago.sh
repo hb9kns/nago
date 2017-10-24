@@ -1,5 +1,5 @@
 #!/bin/sh
-VERID='nago.sh // 2010,2017-10-11 Yargo Bonetti // github.com/hb9kns/nago'
+VERID='nago.sh // 2010,2017-10-24 Yargo Bonetti // github.com/hb9kns/nago'
 
 # external programs
 ## text pager
@@ -21,9 +21,9 @@ mync () {
  else
 # uncomment one one of the following and comment the others,
 # depending on what's available on your system
-## ${NETCAT:-/usr/pkg/bin/netcat} "$@"
-## read gf ; snarf "gopher://$1:$2/$gf" '-'
-  socat -t9 tcp4:$1:$2 -
+  ${NETCAT:-/usr/pkg/bin/netcat} "$@"
+#  read gf ; snarf "gopher://$1:$2/$gf" '-'
+#  socat -t9 tcp4:$1:$2 -
  fi
 }
 
@@ -106,12 +106,11 @@ do case $1 in
  s_ser=$1
  s_dir=/$2
  s_por=${3:-$gopherport}
- shift ; shift
+ if test "$1" != "" ; then shift ; fi
+ if test "$1" != "" ; then shift ; fi
  ;;
 esac
-if test "$1" != ""
-then shift
-fi
+if test "$1" != "" ; then shift ; fi
 done
 
 echo "** starting at $s_ser:$s_por$s_dir"
