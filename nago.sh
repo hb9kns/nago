@@ -1,5 +1,5 @@
 #!/bin/sh
-VERID='nago.sh // 2010,2017-10-24 Yargo Bonetti // github.com/hb9kns/nago'
+VERID='nago.sh // 2010,2017-11-04 Yargo Bonetti // github.com/hb9kns/nago'
 
 # external programs
 ## text pager
@@ -21,9 +21,8 @@ mync () {
  else
 # uncomment one one of the following and comment the others,
 # depending on what's available on your system
-  ${NETCAT:-/usr/pkg/bin/netcat} "$@"
+  ${NETCAT:-/usr/pkg/bin/netcat} "$@" || socat -t9 tcp4:$1:$2 -
 #  read gf ; snarf "gopher://$1:$2/$gf" '-'
-#  socat -t9 tcp4:$1:$2 -
  fi
 }
 
@@ -125,7 +124,7 @@ getdir () {
 # line number counter
   ln=1
 # add title = server directory, will also represent selectable line number
-  echo "  0	 $s_ser:$s_por $s_dir" >$dirtmp
+  echo "  0	1(HERE)	$s_dir	$s_ser	$s_por" >$dirtmp
 # now process every line in turn
   cat $ftmp | { while read ft rest ; do
 # test filetype=1st character
