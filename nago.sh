@@ -120,13 +120,13 @@ getdir () {
 # get directory
  if echo "$s_dir" | mync "$s_ser" "$s_por" | sed -e 's///g;/^.$/d' >$ftmp
  then
-  oldifs="$IFS"; IFS='	'
 # line number counter
   ln=1
 # add title = server directory, will also represent selectable line number
   echo "  0	1(HERE)	$s_dir	$s_ser	$s_por" >$dirtmp
 # now process every line in turn
-  cat $ftmp | { while read ft rest ; do
+  cat $ftmp | { IFS='	'
+   while read ft rest ; do
 # test filetype=1st character
    case $ft in
 # i=fake, don't generate a number - note: there are TABs in the two strings!
@@ -136,7 +136,6 @@ getdir () {
    esac
   done
   }
-  IFS="$oldifs"
  else
 # cannot get directory, error
   return 1
