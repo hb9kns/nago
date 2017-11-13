@@ -127,9 +127,15 @@ getdir () {
 # now process every line in turn
   cat $ftmp | { IFS='	'
    while read ft rest ; do
+# if only filetype set, then no TAB is present, i.e comment line
+   if test "$rest" = ""
+# save comment for display, and set flag
+   then ft="i$ft"
+   fi
 # test filetype=1st character
    case $ft in
-# i=fake, don't generate a number - note: there are TABs in the two strings!
+# note: there are TABs in the following strings!
+# i=fake, don't generate a number, but remove leading 'i' from type
    i*) echo ".	$ft	$rest" >>$dirtmp ;;
 # otherwise it is an entry which may be selected: prepend number, increment
    *) echo "  $ln	$ft	$rest" >>$dirtmp ; ln=`expr $ln + 1` ;;
@@ -252,13 +258,12 @@ while [ $s_act != $ACT_quit ] ; do
       read inp
       poplevel
       ;;
+   7) echo "** please enter request string:"
+      read request
+      s_dir="$s_dir?$request" 
+      ;;
 # otherwise download
    *) echo "** downloading $s_dir ..."
-      if [ "$s_typ" = "7" ] ; then
-       echo "** please enter request string:"
-       read request
-       s_dir="$s_dir?$request" 
-      fi
       if echo "$s_dir" | mync "$s_ser" "$s_por" >$ftmp
       then
        case $s_typ in
