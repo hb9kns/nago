@@ -1,5 +1,5 @@
 #!/bin/sh
-VERID='nago.sh // 2010,2017-11-04 Yargo Bonetti // github.com/hb9kns/nago'
+VERID='nago.sh // 2010,2017-11-13 Yargo Bonetti // github.com/hb9kns/nago'
 
 # external programs
 ## text pager
@@ -28,7 +28,7 @@ mync () {
 
 gopherport=70
 ## default home (-h option)
-STDHOME=sdf.lonestar.org/
+STDHOME=sdf.org/
 ## or use environment value, if defined
 gopherhome=${GOPHER_HOME:-$STDHOME}
 ## default logfile (-l option)
