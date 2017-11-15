@@ -27,7 +27,7 @@ mync () {
 
 gopherport=70
 ## default home (-h option)
-STDHOME=sdf.lonestar.org/
+STDHOME=sdf.org/
 ## or use environment value, if defined
 gopherhome=${GOPHER_HOME:-$STDHOME}
 ## default logfile (-l option)
@@ -119,23 +119,28 @@ getdir () {
 # get directory
  if echo "$s_dir" | mync "$s_ser" "$s_por" | sed -e 's///g;/^.$/d' >$ftmp
  then
-  oldifs="$IFS"; IFS='	'
 # line number counter
   ln=1
 # add title = server directory, will also represent selectable line number
   echo "  0	1(HERE)	$s_dir	$s_ser	$s_por" >$dirtmp
 # now process every line in turn
-  cat $ftmp | { while read ft rest ; do
+  cat $ftmp | { IFS='	'
+   while read ft rest ; do
+# if only filetype set, then no TAB is present, i.e comment line
+   if test "$rest" = ""
+# save comment for display, and set flag
+   then ft="i$ft"
+   fi
 # test filetype=1st character
    case $ft in
-# i=fake, don't generate a number - note: there are TABs in the two strings!
+# note: there are TABs in the following strings!
+# i=fake, don't generate a number, but remove leading 'i' from type
    i*) echo ".	$ft	$rest" >>$dirtmp ;;
 # otherwise it is an entry which may be selected: prepend number, increment
    *) echo "  $ln	$ft	$rest" >>$dirtmp ; ln=`expr $ln + 1` ;;
    esac
   done
   }
-  IFS="$oldifs"
  else
 # cannot get directory, error
   return 1
@@ -252,13 +257,12 @@ while [ $s_act != $ACT_quit ] ; do
       read inp
       poplevel
       ;;
+   7) echo "** please enter request string:"
+      read request
+      s_dir="$s_dir?$request" 
+      ;;
 # otherwise download
    *) echo "** downloading $s_dir ..."
-      if [ "$s_typ" = "7" ] ; then
-       echo "** please enter request string:"
-       read request
-       s_dir="$s_dir?$request" 
-      fi
       if echo "$s_dir" | mync "$s_ser" "$s_por" >$ftmp
       then
        case $s_typ in
