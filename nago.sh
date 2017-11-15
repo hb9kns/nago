@@ -1,10 +1,9 @@
 #!/bin/sh
-VERID='nago.sh // 2010,2017-11-04 Yargo Bonetti // github.com/hb9kns/nago'
+VERID='nago.sh // 2010,2017-11-15 Yargo Bonetti // github.com/hb9kns/nago'
 
 # external programs
 ## text pager
 pager=${PAGER:-more}
-pager=more
 ## html browser
 browser=${BROWSER:-lynx -force_html}
 ## telnet client
