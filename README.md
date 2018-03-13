@@ -67,8 +67,10 @@ a tool available on your system, and comment/remove the others.
 In the netcat version, the environment variable NETCAT will be used if set.
 *If you implement another type, I would love to hear about your solution!*
 
+The script uses `TMPDIR` for temporary files, `/tmp` otherwise.
+
 ---
 
-_(2010,2017-October, Y.Bonetti)_
+_(2010,2018-March, Y.Bonetti)_
 
 [Gopher]: https://en.wikipedia.org/wiki/Gopher_(protocol) "Gopher protocol"

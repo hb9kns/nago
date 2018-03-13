@@ -1,5 +1,5 @@
 #!/bin/sh
-VERID='nago.sh // 2010,2017-11-15 Yargo Bonetti // github.com/hb9kns/nago'
+VERID='nago.sh // 2010,2018-3-13 Yargo Bonetti // github.com/hb9kns/nago'
 
 # external programs
 ## text pager
@@ -36,7 +36,7 @@ gophermap="${GOPHER_MAP:-$HOME/.gophermap}"
 # **modify further down only if you understand the code!**
 
 # temporary files
-tmpbase=${TEMP:-/tmp}
+tmpbase=${TMPDIR:-/tmp}
 tmpprefix=`basename $0`tmp
 dirtmp=$tmpbase/$tmpprefix.$$.dir
 ftmp=$tmpbase/$tmpprefix.$$.tmp
