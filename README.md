@@ -46,29 +46,33 @@ script will offer the following command possibilities:
 
 - enter line number: select the corresponding document (either for
   display and download in case of file, or further selection in case
-  of directory); 0 or b (for back) return to the previous directory
-- prepend a line number with `s` : show gopher URL for that line
-- prepend a line number with `a` : add that line to the gophermap
+  of directory); - or b (for back) return to the previous directory,
+  0 reloads the same directory
+- prepend a line number with `s ` : show gopher URL for that line
+- prepend a line number with `a ` : add that line to the gophermap
 - open other selector (server, port, directory)
-- open gophermap
-- exit script
+- edit or open gophermap
+- quit script
 
-Entering an empty command is the same as entering 0 or b, i.e back;
-if there is no previous directory in the history, the script will quit.
+Entering an empty command is the same as entering 0, i.e reload.
+If there is no previous directory in the history,
+the script will quit when given the back command.
 
 ## configuration
 
 At the beginning of the script, handlers for various selector types must
 be defined, as well as the program to fetch gopher data.
 
-The contents of environment variable NETCAT will be used as netcat
+The contents of environment variable `$NETCAT` will be used as netcat
 if set, otherwise the script searches for `netcat, nc, socat.` If
 all fail, it will assume `snarf` is available, and if that does
 not work, the script will fail in a not very glorious way.
 
 *If you implement another fetcher, I would love to hear about your solution!*
 
-The script uses `TMPDIR` for temporary files, `/tmp` otherwise.
+The script uses `$TMPDIR` for temporary files, `/tmp` otherwise.
+
+For the editor, `$VISUAL` or `$EDITOR` or the fallback `ed` are used.
 
 ---
 
