@@ -17,7 +17,7 @@ imgviewer () { echo '** image name:' "$@" ; }
 netcat=''
 if test "$NETCAT" = ""
 then for nn in netcat nc
-do if `$nn -v 2>&1 |grep 'netcat\|destination' 2>&1 >/dev/null`
+do if `$nn -v 2>&1 |grep 'hostname\|destination' 2>&1 >/dev/null`
  then netcat=$nn
   break
  fi

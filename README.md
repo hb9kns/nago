@@ -59,13 +59,14 @@ if there is no previous directory in the history, the script will quit.
 ## configuration
 
 At the beginning of the script, handlers for various selector types must
-be defined, as well as the program to fetch gopher data (netcat/socat/snarf
-for example).
+be defined, as well as the program to fetch gopher data.
 
-Several versions are available, all but one commented out; please uncomment
-a tool available on your system, and comment/remove the others.
-In the netcat version, the environment variable NETCAT will be used if set.
-*If you implement another type, I would love to hear about your solution!*
+The contents of environment variable NETCAT will be used as netcat
+if set, otherwise the script searches for `netcat, nc, socat.` If
+all fail, it will assume `snarf` is available, and if that does
+not work, the script will fail in a not very glorious way.
+
+*If you implement another fetcher, I would love to hear about your solution!*
 
 The script uses `TMPDIR` for temporary files, `/tmp` otherwise.
 
