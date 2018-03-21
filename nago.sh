@@ -8,6 +8,18 @@ pager=${PAGER:-more}
 browser=${BROWSER:-lynx -force_html}
 ## telnet client
 telnet=${TELNET:-telnet}
+## editor
+editor="$VISUAL"
+editor=${editor:-$EDITOR}
+editor=${editor:ed}
+
+cat <<EOH >&2
+** pager=$pager
+** browser=$browser
+** telnet=$telnet
+** editor=$editor
+EOH
+
 ## image handler
 #imgviewer () { display "$@" ; }
 # dumb handler: only print image name
@@ -184,6 +196,7 @@ ACT_other=3
 ACT_show=4
 ACT_add=5
 ACT_log=6
+ACT_edlog=7
 
 # show directory (in $dirtmp), and return selection type, dir, server, port
 # and action in variables s_typ, s_dir, s_ser, s_por, s_act
@@ -198,11 +211,11 @@ selectdir () {
  while ! grep "^  $ln	" $dirtmp >/dev/null ; do
 # show directory
   $pager $ftmp
-  echo "** (s/a)N (show/addlog) selection, o.ther, l.og, x.it, q.uit"
+  echo '** s.how N / a.ddlog N / ed.itlog/b.ack/o.ther/l.og/q.uit ?'
   read inp
   case $inp in
 # set action flag
-  q*|x*) ln=0 ; act=$ACT_quit ;;
+  q*) ln=0 ; act=$ACT_quit ;;
   o*) ln=0 ; act=$ACT_other
       echo "** other server? (empty=same)"
       read inp
@@ -212,15 +225,12 @@ selectdir () {
       s_por=${inp:-$gopherport}
       echo "** directory? (may be empty)"
       read s_dir ;;
-  b*) ln=0 ; act=$ACT_back ;;
-  s*) ln=${inp#?} ; act=$ACT_show ;;
-  a*) ln=${inp#?} ; act=$ACT_add ;;
+  b*|-) ln=0 ; act=$ACT_back ;;
+  s*) ln=${inp#* } ; act=$ACT_show ;;
+  a*) ln=${inp#* } ; act=$ACT_add ;;
   l*) ln=0 ; act=$ACT_log ;;
-  *) ln=${inp:-0}
-     if test $ln = 0
-     then act=$ACT_back
-     else act=$ACT_select
-     fi ;;
+  ed*) ln=0 ; act=$ACT_edlog ;;
+  *) ln=${inp:-0} ;  act=$ACT_select ;;
   esac
  done
  s_act=$act
@@ -245,9 +255,21 @@ selectdir () {
  esac
 }
 
-# save current point in stack
+# get top level without changing stack
+peeklevel () {
+ s_ser=`tail -n 1 $stack | cut -f 1`
+ s_por=`tail -n 1 $stack | cut -f 2`
+ s_dir=`tail -n 1 $stack | cut -f 3`
+ echo "$s_ser	$s_por	$s_dir"
+}
+
+# save current point in stack, unless already same as top level
 pushlevel () {
- echo "$s_ser	$s_por	$s_dir" >>$stack
+ local newt
+ newt="$s_ser	$s_por	$s_dir"
+ if test "`peeklevel`" != "$newt"
+ then echo "$s_ser	$s_por	$s_dir" >>$stack
+ fi
 }
 
 # recall point from stack
@@ -327,6 +349,9 @@ do pushlevel
     echo '**  (ENTER to resume)' ; read inp ; poplevel ;;
   $ACT_add) poplevel ; echo '** added:' ; tail -n 1 "$gophermap" ; sleep 1 ;;
   $ACT_log) echo "** switching to logfile $gophermap" ; sleep 1 ;;
+  $ACT_edlog) echo "** calling $editor on logfile $gophermap"
+   $editor "$gophermap"
+   echo "** done editing $gophermap" ; sleep 1 ;;
   *) echo "** unrecognized command, internal error! trying to go on..."
      poplevel ;;
   esac

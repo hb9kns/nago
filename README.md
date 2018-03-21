@@ -24,7 +24,7 @@ run `nago.sh` without arguments to get a short help:
       or if that is empty, sdf.lonestar.org/
       (only default port 70 is supported, and must be a directory)
      Note: will not work for retrieving a file directly! (undefined behaviour)
-    (nago.sh // 2010,2017-10-11 Yargo Bonetti // github.com/hb9kns/nago)
+    (nago.sh // 2010,2018-3-21 Yargo Bonetti // github.com/hb9kns/nago)
 
 To read a local gophermap file, specify it after the `-f` option;
 `-f` alone will start with the logfile.
