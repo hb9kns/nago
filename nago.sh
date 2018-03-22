@@ -11,7 +11,7 @@ telnet=${TELNET:-telnet}
 ## editor
 editor="$VISUAL"
 editor=${editor:-$EDITOR}
-editor=${editor:ed}
+editor=${editor:-ed}
 
 cat <<EOH >&2
 ** pager=$pager
