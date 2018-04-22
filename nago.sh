@@ -1,5 +1,5 @@
 #!/bin/sh
-VERID='nago.sh // 2010,2018-3-21 Yargo Bonetti // github.com/hb9kns/nago'
+VERID='nago.sh // 2010,2018-4-19 Yargo Bonetti // github.com/hb9kns/nago'
 
 # external programs
 ## text pager
@@ -157,8 +157,9 @@ echo "** starting at $s_ser:$s_por$s_dir"
 # get a directory $s_dir from server $s_ser , port $s_por,
 # preprocess it, and store it
 getdir () {
-# get directory
- if echo "$s_dir" | mync "$s_ser" "$s_por" | sed -e 's///g;/^.$/d' >$ftmp
+# get directory, eliminating <CR>, replacing trailing <TAB> by <TAB><SPC>
+# and removing lines with only one single character
+ if echo "$s_dir" | mync "$s_ser" "$s_por" | sed -e 's///g;s/	$/	 /;/^.$/d' >$ftmp
  then
 # line number counter
   ln=1
