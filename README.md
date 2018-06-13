@@ -76,6 +76,11 @@ For the editor, `$VISUAL` or `$EDITOR` or the fallback `ed` are used.
 
 ---
 
-_(2010,2018-March, Y.Bonetti)_
+### Todos
+
+- additional column in gopherlog indicating last time of visit, for
+  automatic detection of updated remote content
+
+_(2010,2018-June, Y.Bonetti)_
 
 [Gopher]: https://en.wikipedia.org/wiki/Gopher_(protocol) "Gopher protocol"
