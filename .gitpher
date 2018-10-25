@@ -1,0 +1,4 @@
+[gitpher]
+short_descr = shell script providing a simple command-line based Gopher client
+description = nago uses netcat/socat/snarf for getting Gopher content from remote servers, providing a gophermap-based bookmark file, and should work out-of-the-box on Linux, Free/Net/OpenBSD or any other decent Unix
+patch_email = yargo@sdf.org
